@@ -26,35 +26,29 @@ Este documento define la arquitectura técnica del entorno de analítica de dato
 
 ### Estructura de Buckets
 
-```
-minio/
-├── iceberg-data/                    # Bucket principal para Iceberg
-│   ├── bronze/                      # Datos crudos/raw
-│   │   ├── <source-name>/
-│   │   │   └── <table-name>/
-│   │   │       ├── data/
-│   │   │       ├── metadata/
-│   │   │       └── snapshots/
-│   ├── silver/                      # Datos limpios/curated
-│   │   ├── <domain>/
-│   │   │   └── <table-name>/
-│   │   │       ├── data/
-│   │   │       ├── metadata/
-│   │   │       └── snapshots/
-│   └── gold/                        # Datos agregados/serving
-│       ├── <business-unit>/
-│       │   └── <table-name>/
-│       │       ├── data/
-│       │       ├── metadata/
-│       │       └── snapshots/
-├── warehouse/                       # Warehouse metadata (Iceberg catalog)
-│   └── <namespace>/
-│       ├── metadata/
-│       └── version-hint.txt
-└── logs/                            # Logs de operaciones y auditoría
-    ├── etl/
-    ├── queries/
-    └── errors/
+```mermaid
+flowchart TD
+  MinIO["minio/"]
+  Iceberg["iceberg-data/"]
+  Warehouse["warehouse/"]
+  Logs["logs/"]
+
+  Iceberg --> Bronze["bronze/"]
+  Iceberg --> Silver["silver/"]
+  Iceberg --> Gold["gold/"]
+
+  Bronze --> RawEvents["<source-name>/<table-name>/\n- data/\n- metadata/\n- snapshots/"]
+  Silver --> SilverTables["<domain>/<table-name>/\n- data/\n- metadata/\n- snapshots/"]
+  Gold --> GoldTables["<business-unit>/<table-name>/\n- data/\n- metadata/\n- snapshots/"]
+
+  Warehouse --> Namespace["<namespace>/\n- metadata/\n- version-hint.txt"]
+  Logs --> ETL["etl/"]
+  Logs --> Queries["queries/"]
+  Logs --> Errors["errors/"]
+
+  MinIO --> Iceberg
+  MinIO --> Warehouse
+  MinIO --> Logs
 ```
 
 ### Configuración de Acceso

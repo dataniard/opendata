@@ -51,25 +51,44 @@ Este repositorio cubre:
 
 ## 📂 Estructura del Repositorio
 
-```
-opendata/
-├── doc/                    # Documentación del proyecto
-│   ├── 01_SPECS.md        # Especificaciones técnicas
-│   └── 02_PLAN.md         # Plan de ejecución
-├── 00_PROMPTS/            # Configuración de prompts
-├── docker/                # Configuraciones Docker
-│   ├── docker-compose.yml # Orquestación completa
-│   └── .env               # Variables de entorno
-├── config/                # Archivos de configuración
-│   ├── spark/             # Configuración Spark + Iceberg
-│   ├── trino/             # Configuración Trino
-│   └── postgres/          # Scripts de inicialización
-├── scripts/               # Scripts de utilidad
-│   ├── init-buckets.sh    # Inicializar buckets MinIO
-│   ├── create_iceberg_tables.py      # Crear tablas
-│   └── ingest_bronze_data.py         # Ingestar datos
-├── QUICKSTART.md          # Guía de inicio rápido
-└── README.md              # Este archivo
+```mermaid
+flowchart TD
+	root["opendata/"]
+	docdir["doc/"]
+	doc1["01_SPECS.md"]
+	doc2["02_PLAN.md"]
+	prompts["00_PROMPTS/"]
+	docker["docker/"]
+	compose["docker-compose.yml"]
+	envfile[".env"]
+	config["config/"]
+	spark["config/spark/"]
+	trino["config/trino/"]
+	postgres["config/postgres/"]
+	scripts["scripts/"]
+	initb["init-buckets.sh"]
+	create["create_iceberg_tables.py"]
+	ingest["ingest_bronze_data.py"]
+	quick["QUICKSTART.md"]
+	readme["README.md"]
+
+	root --> docdir
+	docdir --> doc1
+	docdir --> doc2
+	root --> prompts
+	root --> docker
+	docker --> compose
+	docker --> envfile
+	root --> config
+	config --> spark
+	config --> trino
+	config --> postgres
+	root --> scripts
+	scripts --> initb
+	scripts --> create
+	scripts --> ingest
+	root --> quick
+	root --> readme
 ```
 
 ---
@@ -138,4 +157,4 @@ Cada herramienta mantiene su propia licencia.
 
 ---
 
-**Última actualización:** Abril 2026
+**Última actualización:** Julio 2026

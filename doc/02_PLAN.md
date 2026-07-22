@@ -26,23 +26,40 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
 - [ ] Revisar requisitos de sistema: Docker, Docker Compose >= 2.0, 8GB RAM mínimo
 - [ ] Clonar/descargar el repositorio `opendata`
 - [ ] Crear estructura de directorios:
-  ```
-  opendata/
-  ├── docker/
-  │   ├── docker-compose.yml
-  │   └── .env
-  ├── config/
-  │   ├── minio/
-  │   │   └── policy.json
-  │   ├── hive/
-  │   │   └── hive-site.xml
-  │   └── iceberg/
-  │       └── spark-defaults.conf
-  ├── scripts/
-  │   ├── init-buckets.sh
-  │   ├── init-metastore.sql
-  │   └── create-tables.py
-  └── doc/
+  ```mermaid
+  flowchart TD
+    root["opendata/"]
+    docker["docker/"]
+    compose["docker-compose.yml"]
+    envfile[".env"]
+    config["config/"]
+    minio["minio/"]
+    policy["policy.json"]
+    hive["hive/"]
+    hivesite["hive-site.xml"]
+    iceberg["iceberg/"]
+    sparkconf["spark-defaults.conf"]
+    scripts["scripts/"]
+    initb["init-buckets.sh"]
+    initmeta["init-metastore.sql"]
+    createt["create-tables.py"]
+    docdir["doc/"]
+
+    root --> docker
+    docker --> compose
+    docker --> envfile
+    root --> config
+    config --> minio
+    minio --> policy
+    config --> hive
+    hive --> hivesite
+    config --> iceberg
+    iceberg --> sparkconf
+    root --> scripts
+    scripts --> initb
+    scripts --> initmeta
+    scripts --> createt
+    root --> docdir
   ```
 
 #### 1.2 Despliegue de Docker Compose
@@ -91,11 +108,15 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
   ```
 
 - [ ] Verificar estructura de prefijos:
-  ```
-  s3://iceberg-data/
-  ├── bronze/
-  ├── silver/
-  └── gold/
+  ```mermaid
+  flowchart TD
+    A["s3://iceberg-data/"]
+    B["bronze/"]
+    C["silver/"]
+    D["gold/"]
+    A --> B
+    A --> C
+    A --> D
   ```
 
 #### 2.2 Inicializar Base de Datos de Metadatos

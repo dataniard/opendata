@@ -15,27 +15,40 @@ Guía para desplegar y ejecutar el entorno completo de analítica de datos.
 
 ## 📦 Estructura del Proyecto
 
-```
-opendata/
-├── docker/
-│   ├── docker-compose.yml       # Orquestación de servicios
-│   └── .env                     # Variables de entorno
-├── config/
-│   ├── spark/
-│   │   └── spark-defaults.conf  # Configuración de Spark
-│   ├── trino/
-│   │   └── catalog/
-│   │       └── iceberg.properties # Configuración de Trino
-│   └── postgres/
-│       └── init.sql             # Script de inicialización
-├── scripts/
-│   ├── init-buckets.sh          # Inicializar buckets MinIO
-│   ├── create_iceberg_tables.py # Crear tablas Iceberg
-│   └── ingest_bronze_data.py    # Ingestar datos de prueba
-├── doc/
-│   ├── 01_SPECS.md              # Especificaciones técnicas
-│   └── 02_PLAN.md               # Plan de implementación
-└── README.md                    # Este archivo
+```mermaid
+flowchart TD
+  root["opendata/"]
+  docker["docker/"]
+  compose["docker-compose.yml"]
+  envfile[".env"]
+  config["config/"]
+  spark["spark/spark-defaults.conf"]
+  trino["trino/catalog/iceberg.properties"]
+  postgres["postgres/init.sql"]
+  scripts["scripts/"]
+  initb["init-buckets.sh"]
+  create["create_iceberg_tables.py"]
+  ingest["ingest_bronze_data.py"]
+  doc["doc/"]
+  doc1["01_SPECS.md"]
+  doc2["02_PLAN.md"]
+  readme["README.md"]
+
+  root --> docker
+  docker --> compose
+  docker --> envfile
+  root --> config
+  config --> spark
+  config --> trino
+  config --> postgres
+  root --> scripts
+  scripts --> initb
+  scripts --> create
+  scripts --> ingest
+  root --> doc
+  doc --> doc1
+  doc --> doc2
+  root --> readme
 ```
 
 ---

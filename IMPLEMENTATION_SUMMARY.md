@@ -167,44 +167,40 @@ README del proyecto actualizado con:
 
 ## 🏗️ Arquitectura Implementada
 
+```mermaid
+flowchart TD
+   subgraph DOCKER["Docker Compose (opendata)"]
+      MinIO["MinIO\n(9000,9001)"]
+      Postgres["PostgreSQL\n(5432)"]
+      HiveMS["Hive Metastore\n(9083)"]
+      Spark["Apache Spark Cluster\nMaster (8080) + Workers (8081,8082)"]
+      Trino["Trino\n(8888)"]
+      Superset["Superset\n(8088)"]
+   end
+
+   MinIO -->|object store| HiveMS
+   Postgres -->|metastore DB| HiveMS
+   HiveMS -->|catalog| Spark
+   Spark -->|query| Trino
+   Trino -->|visualization| Superset
 ```
-┌─────────────────────────────────────────────────┐
-│           Docker Compose (opendata)             │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│  ┌──────────────┐  ┌──────────────┐            │
-│  │   MinIO      │  │ PostgreSQL   │            │
-│  │  (9000,9001) │  │   (5432)     │            │
-│  └──────────────┘  └──────────────┘            │
-│         │                  │                    │
-│         └──────────┬───────┘                    │
-│                    │                            │
-│        ┌──────────────────────┐               │
-│        │ Hive Metastore (9083)│               │
-│        └──────────────────────┘               │
-│                    │                            │
-│  ┌─────────────────────────────────────┐      │
-│  │      Apache Spark Cluster           │      │
-│  │  Master (8080) + Workers (8081,82)  │      │
-│  └─────────────────────────────────────┘      │
-│                    │                            │
-│  ┌─────────────────────────────────────┐      │
-│  │   Trino (8888)   │   Superset (8088) │    │
-│  │  Query Engine    │  Visualization    │      │
-│  └─────────────────────────────────────┘      │
-│                                                 │
-└─────────────────────────────────────────────────┘
 
 Data Flow:
-┌──────────────────────────────────────────────────┐
-│ Fuentes de datos → Bronze (Raw)                 │
-│      ↓                                           │
-│ Transformación → Silver (Curated)               │
-│      ↓                                           │
-│ Agregación → Gold (Serving)                     │
-│      ↓                                           │
-│ Queries (Spark/Trino) → Superset (Dashboards)  │
-└──────────────────────────────────────────────────┘
+
+```mermaid
+flowchart TD
+   Sources["Fuentes de datos\n(API / DB / MQ)"]
+   Bronze["Bronze (Raw)\n- Raw ingesta\n- Retención corta"]
+   Silver["Silver (Curated)\n- Limpieza y enriquecimiento"]
+   Gold["Gold (Serving)\n- Agregados y materializadas"]
+   Queries["Queries (Spark / Trino)"]
+   SupersetNode["Superset (Dashboards)"]
+
+   Sources --> Bronze
+   Bronze --> Silver
+   Silver --> Gold
+   Gold --> Queries
+   Queries --> SupersetNode
 ```
 
 ---

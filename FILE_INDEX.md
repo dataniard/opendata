@@ -8,37 +8,52 @@ Se han creado **16 archivos nuevos** organizados en una estructura profesional y
 
 ## 📂 Estructura del Proyecto
 
-```
-opendata/
-├── 📄 README.md                          ← Punto de entrada principal
-├── 📄 QUICKSTART.md                      ← Guía rápida (30 minutos)
-├── 📄 ARCHITECTURE_DIAGRAM.md            ← Diagramas visuales
-├── 📄 IMPLEMENTATION_SUMMARY.md          ← Resumen de implementación
-├── 📄 FILE_INDEX.md                      ← Este archivo
-│
-├── 📂 doc/                               ← Documentación técnica
-│   ├── 01_SPECS.md                       ← Especificaciones técnicas
-│   └── 02_PLAN.md                        ← Plan de implementación
-│
-├── 🐳 docker/                            ← Infraestructura Docker
-│   ├── docker-compose.yml                ← Orquestación (10 servicios)
-│   └── .env                              ← Variables de entorno
-│
-├── ⚙️ config/                            ← Archivos de configuración
-│   ├── spark/
-│   │   └── spark-defaults.conf           ← Spark + Iceberg config
-│   ├── trino/
-│   │   └── catalog/
-│   │       └── iceberg.properties        ← Trino catalog config
-│   └── postgres/
-│       └── init.sql                      ← PostgreSQL schema + audit
-│
-└── 🔧 scripts/                           ← Scripts de utilidad
-    ├── init-buckets.sh                   ← Crear buckets MinIO
-    ├── create_iceberg_tables.py          ← Crear tablas Iceberg
-    ├── ingest_bronze_data.py             ← Ingestar datos Bronze
-    ├── transform_silver_data.py          ← Transformar Silver
-    └── aggregate_gold_data.py            ← Agregar Gold
+```mermaid
+flowchart TD
+   root["opendata/"]
+   readme["README.md"]
+   quick["QUICKSTART.md"]
+   arch["ARCHITECTURE_DIAGRAM.md"]
+   impl["IMPLEMENTATION_SUMMARY.md"]
+   index["FILE_INDEX.md"]
+   docdir["doc/"]
+   doc1["01_SPECS.md"]
+   doc2["02_PLAN.md"]
+   docker["docker/"]
+   compose["docker-compose.yml"]
+   envfile[".env"]
+   config["config/"]
+   sparkconf["spark/spark-defaults.conf"]
+   trino["trino/catalog/iceberg.properties"]
+   postgres["postgres/init.sql"]
+   scripts["scripts/"]
+   initb["init-buckets.sh"]
+   createTables["create_iceberg_tables.py"]
+   ingest["ingest_bronze_data.py"]
+   transform["transform_silver_data.py"]
+   aggregate["aggregate_gold_data.py"]
+
+   root --> readme
+   root --> quick
+   root --> arch
+   root --> impl
+   root --> index
+   root --> docdir
+   docdir --> doc1
+   docdir --> doc2
+   root --> docker
+   docker --> compose
+   docker --> envfile
+   root --> config
+   config --> sparkconf
+   config --> trino
+   config --> postgres
+   root --> scripts
+   scripts --> initb
+   scripts --> createTables
+   scripts --> ingest
+   scripts --> transform
+   scripts --> aggregate
 ```
 
 ---
