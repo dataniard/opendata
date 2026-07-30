@@ -115,7 +115,10 @@ docker compose exec spark-master spark-submit /scripts/create_iceberg_tables.py
 # 3. Ingestar datos
 docker compose exec spark-master spark-submit /scripts/ingest_bronze_data.py
 
-# 4. Acceder a MinIO UI
+# 4. Ejecutar pipeline completo
+bash scripts/run_etl_pipeline.sh
+
+# 5. Acceder a MinIO UI
 # http://localhost:9001
 
 # 5. Acceder a Spark Master

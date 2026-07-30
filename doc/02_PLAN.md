@@ -336,7 +336,12 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
 
 - [ ] Ejecutar ingesta:
   ```bash
-  docker compose -f docker/docker-compose.yml exec spark-master spark-submit /scripts/ingest_bronze.py
+  docker compose -f docker/docker-compose.yml exec spark-master spark-submit /scripts/ingest_bronze_data.py
+  ```
+
+- [ ] Ejecutar pipeline completo de carga:
+  ```bash
+  bash scripts/run_etl_pipeline.sh
   ```
 
 #### 5.2 Crear Pipeline de Transformación (Bronze → Silver)
@@ -424,6 +429,27 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
   
   print("Agregación completada")
   spark.stop()
+  ```
+
+#### 5.4 Pipeline de Carga Completo
+
+- [ ] Crear `scripts/run_etl_pipeline.sh`:
+  ```bash
+  #!/usr/bin/env bash
+  set -euo pipefail
+
+  ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  cd "$ROOT_DIR"
+
+  docker compose -f docker/docker-compose.yml exec -T spark-master spark-submit /scripts/create_iceberg_tables.py
+  docker compose -f docker/docker-compose.yml exec -T spark-master spark-submit /scripts/ingest_bronze_data.py
+  docker compose -f docker/docker-compose.yml exec -T spark-master spark-submit /scripts/transform_silver_data.py
+  docker compose -f docker/docker-compose.yml exec -T spark-master spark-submit /scripts/aggregate_gold_data.py
+  ```
+
+- [ ] Ejecutar el pipeline completo:
+  ```bash
+  bash scripts/run_etl_pipeline.sh
   ```
 
 ---

@@ -74,6 +74,7 @@ Esto inicia:
 - Spark Master & Workers (puertos 7077, 8080, 8081, 8082)
 - Trino (puerto 8888)
 - Superset (puerto 8088)
+- Apache Airflow Webserver (puerto 8085)
 
 ### 1.3 Verificar que los servicios estén activos
 
@@ -181,7 +182,23 @@ Generando 1000 eventos de prueba...
 
 ---
 
-## 🔍 Paso 5: Verificar Datos
+## � Paso 5: Ejecutar Pipeline Completo
+
+### 5.1 Ejecutar el pipeline de carga
+
+```bash
+bash scripts/run_etl_pipeline.sh
+```
+
+Deberías ver que se ejecutan secuencialmente:
+- `create_iceberg_tables.py`
+- `ingest_bronze_data.py`
+- `transform_silver_data.py`
+- `aggregate_gold_data.py`
+
+---
+
+## 🔍 Paso 6: Verificar Datos
 
 ### 5.1 Acceder a Spark SQL
 
@@ -272,6 +289,7 @@ docker compose down -v  # Eliminar volúmenes también
 | Spark Worker 2 | http://localhost:8082 | - | - |
 | Trino | http://localhost:8888 | - | - |
 | Superset | http://localhost:8088 | admin | admin123 |
+| Airflow Webserver | http://localhost:8085 | admin | admin |
 
 ---
 

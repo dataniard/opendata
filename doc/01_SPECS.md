@@ -311,6 +311,8 @@ spark.sql.iceberg.write.shuffle-by-partition-id=true
 - Orquestación de DAGs ETL
 - Monitoreo y alertas
 - Control de dependencias
+- Ejemplo de DAG en `docker/airflow/dags/opendata_example_dag.py`
+- Wrapper de pipeline en `scripts/run_etl_pipeline.sh`
 
 ---
 

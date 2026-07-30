@@ -3,6 +3,16 @@
 -- Crear extensión si no existe
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Crear base de datos de Airflow si no existe
+DO
+$do$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'airflow') THEN
+    CREATE DATABASE airflow;
+  END IF;
+END
+$do$;
+
 -- ==================== Tablas de Auditoría ====================
 
 -- Tabla de operaciones en Iceberg
