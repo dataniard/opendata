@@ -16,6 +16,7 @@ flowchart TD
 
         subgraph METADATA["🎯 METADATA & ORCHESTRATION LAYER"]
             HiveMS["Hive Metastore Service<br/>(9083)<br/>• Namespace Management<br/>• Table Registry<br/>• Partition Management<br/>• Schema Evolution"]
+            Airflow["Apache Airflow<br/>(8085)<br/>• DAGs / Scheduling<br/>• Monitorización<br/>• Retries & Alerts"]
         end
 
         subgraph PROCESSING["⚙️ PROCESSING LAYER"]
@@ -244,4 +245,4 @@ Network Connectivity:
 
 **Documento**: Arquitectura OpenData  
 **Versión**: 1.0  
-**Actualización**: Mayo 2026
+**Actualización**: Julio 2026

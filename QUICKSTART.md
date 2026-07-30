@@ -183,18 +183,30 @@ Generando 1000 eventos de prueba...
 ---
 
 ## � Paso 5: Ejecutar Pipeline Completo
-
 ### 5.1 Ejecutar el pipeline de carga
 
-```bash
-bash scripts/run_etl_pipeline.sh
-```
+Hay dos maneras principales de ejecutar el pipeline completo:
 
-Deberías ver que se ejecutan secuencialmente:
-- `create_iceberg_tables.py`
-- `ingest_bronze_data.py`
-- `transform_silver_data.py`
-- `aggregate_gold_data.py`
+- Desde Airflow (recomendado, orquestación programada):
+
+  1. Sube/arranca los servicios `docker compose up -d`.
+  2. Abre la UI de Airflow: http://localhost:8085
+  3. Activa y lanza el DAG `opendata_etl_pipeline` (ubicado en `docker/airflow/dags/opendata_example_dag.py`).
+
+  También puedes dispararlo desde la CLI dentro del contenedor Airflow:
+
+  ```bash
+  docker compose -f docker/docker-compose.yml exec airflow-webserver \
+    airflow dags trigger opendata_etl_pipeline
+  ```
+
+- Directamente desde el host (sin Airflow):
+
+  ```bash
+  bash scripts/run_etl_pipeline.sh
+  ```
+
+Al ejecutarlo verás los pasos secuenciales: `create_iceberg_tables.py`, `ingest_bronze_data.py`, `transform_silver_data.py`, `aggregate_gold_data.py`.
 
 ---
 
@@ -367,4 +379,4 @@ spark-master:
 ---
 
 **Versión**: 1.0  
-**Última actualización**: Mayo 2026
+**Última actualización**: Julio 2026

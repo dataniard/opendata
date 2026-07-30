@@ -344,6 +344,13 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
   bash scripts/run_etl_pipeline.sh
   ```
 
+> Nota: También se incluye un DAG de Airflow (`docker/airflow/dags/opendata_example_dag.py`) llamado `opendata_etl_pipeline` que ejecuta `run_etl_pipeline.sh`. Puedes activar y programar este DAG desde la UI de Airflow en `http://localhost:8085` o desencadenarlo con la CLI:
+
+```bash
+docker compose -f docker/docker-compose.yml exec airflow-webserver \
+  airflow dags trigger opendata_etl_pipeline
+```
+
 #### 5.2 Crear Pipeline de Transformación (Bronze → Silver)
 
 - [ ] Crear `scripts/transform_silver.py`:
@@ -566,10 +573,10 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
 
 ## 🚀 Siguientes Pasos
 
-1. **Integración de Apache Airflow** (Semana 5):
-   - Crear DAGs para automatizar ingestión diaria
-   - Scheduling de transformaciones
-   - Alertas de fallos
+1. **Airflow**: DAG de ejemplo incluido
+  - El DAG `opendata_etl_pipeline` ya está disponible en `docker/airflow/dags/opendata_example_dag.py`.
+  - Úsalo para programar ejecuciones diarias y supervisar el pipeline desde la UI.
+  - Considerar separación de tareas individuales (ingesta, transform, aggregate) en tareas Airflow separadas para mejor trazabilidad.
 
 2. **Integración de dbt** (Semana 5-6):
    - Modelos dbt para transformaciones Silver/Gold
@@ -589,4 +596,4 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
 ---
 
 **Versión**: 1.0  
-**Última actualización**: Mayo 2026
+**Última actualización**: Julio 2026

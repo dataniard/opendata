@@ -116,6 +116,11 @@ docker compose exec spark-master spark-submit /scripts/create_iceberg_tables.py
 docker compose exec spark-master spark-submit /scripts/ingest_bronze_data.py
 
 # 4. Ejecutar pipeline completo
+# Opción 1: Ejecutar el pipeline desde Airflow (recomendado)
+docker compose -f docker/docker-compose.yml exec airflow-webserver \
+	airflow dags trigger opendata_etl_pipeline
+
+# Opción 2: Ejecutar el pipeline directamente desde el host (sin Airflow)
 bash scripts/run_etl_pipeline.sh
 
 # 5. Acceder a MinIO UI

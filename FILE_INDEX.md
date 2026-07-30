@@ -54,6 +54,9 @@ flowchart TD
    scripts --> ingest
    scripts --> transform
    scripts --> aggregate
+   scripts --> run_etl
+   docker --> airflowdags
+   airflowdags --> dagfile
 ```
 
 ---
@@ -101,6 +104,8 @@ flowchart TD
 | **ingest_bronze_data.py** | 140 | Generar e ingestar datos de prueba |
 | **transform_silver_data.py** | 150 | Transformar Bronze → Silver |
 | **aggregate_gold_data.py** | 180 | Agregar Silver → Gold |
+| **run_etl_pipeline.sh** | 40 | Orquesta la ejecución secuencial del pipeline (create → ingest → transform → aggregate) |
+| **docker/airflow/dags/opendata_example_dag.py** | 20 | DAG de Airflow `opendata_etl_pipeline` que ejecuta `run_etl_pipeline.sh` |
 
 **Total scripts**: ~680 líneas de código
 
@@ -272,5 +277,5 @@ La arquitectura está diseñada para migración a Kubernetes:
 
 **Documento**: Índice Completo del Proyecto  
 **Versión**: 1.0  
-**Actualización**: Mayo 2026  
+**Actualización**: Julio 2026  
 **Estado**: ✅ Ready for Development

@@ -131,6 +131,13 @@ Script de transformación Bronze → Silver:
 - Verifica distribución de eventos
 
 #### 13. **scripts/aggregate_gold_data.py** (4.5 KB)
+ 
+#### 14. **scripts/run_etl_pipeline.sh** (0.6 KB)
+Script Bash que orquesta la ejecución secuencial de los pasos del pipeline
+(`create_iceberg_tables.py` → `ingest_bronze_data.py` → `transform_silver_data.py` → `aggregate_gold_data.py`) usando `spark-submit` dentro del servicio `spark-master`.
+
+#### 15. **docker/airflow/dags/opendata_example_dag.py** (0.2 KB)
+DAG de ejemplo en Airflow (`opendata_etl_pipeline`) que ejecuta `run_etl_pipeline.sh` y permite scheduling diario y monitorización desde la UI de Airflow.
 Script de agregación Silver → Gold:
 - Crea métricas diarias por usuario
 - Crea agregaciones por tipo de evento
@@ -254,6 +261,6 @@ flowchart TD
 
 ---
 
-**Implementación completada**: Mayo 2026  
+**Implementación completada**: Julio 2026  
 **Versión**: 1.0  
 **Estado**: ✅ Ready for Development
