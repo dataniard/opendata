@@ -4,31 +4,11 @@ Script de transformación: Bronze → Silver
 Limpia y enriquece los datos crudos para la capa Silver
 """
 
-from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, from_json, schema_of_json, lit, current_timestamp, when
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, MapType
 import json
 import sys
-
-def create_spark_session():
-    """Crear sesión de Spark con configuración de Iceberg"""
-    spark = SparkSession.builder \
-        .appName("transform_bronze_to_silver") \
-        .config("spark.sql.catalog.iceberg", "org.apache.iceberg.spark.SparkCatalog") \
-        .config("spark.sql.catalog.iceberg.type", "hive") \
-        .config("spark.sql.catalog.iceberg.uri", "thrift://hive-metastore:9083") \
-        .config("spark.sql.catalog.iceberg.warehouse", "s3a://iceberg-data") \
-        .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
-        .config("spark.hadoop.fs.s3a.access.key", "minioadmin") \
-        .config("spark.hadoop.fs.s3a.secret.key", "changeme123!") \
-        .config("spark.hadoop.fs.s3a.path.style.access", "true") \
-        .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
-        .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
-        .config("spark.sql.defaultCatalog", "iceberg") \
-        .getOrCreate()
-    
-    spark.sparkContext.setLogLevel("INFO")
-    return spark
+from config import create_spark_session
 
 def transform_bronze_to_silver(spark):
     """Transformar datos de Bronze a Silver"""

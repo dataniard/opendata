@@ -4,30 +4,10 @@ Script de agregación: Silver → Gold
 Crea agregaciones de datos optimizadas para consumo analítico
 """
 
-from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, count, countDistinct, min, max, to_date, current_timestamp, lit, when
 from datetime import datetime
 import sys
-
-def create_spark_session():
-    """Crear sesión de Spark con configuración de Iceberg"""
-    spark = SparkSession.builder \
-        .appName("aggregate_silver_to_gold") \
-        .config("spark.sql.catalog.iceberg", "org.apache.iceberg.spark.SparkCatalog") \
-        .config("spark.sql.catalog.iceberg.type", "hive") \
-        .config("spark.sql.catalog.iceberg.uri", "thrift://hive-metastore:9083") \
-        .config("spark.sql.catalog.iceberg.warehouse", "s3a://iceberg-data") \
-        .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
-        .config("spark.hadoop.fs.s3a.access.key", "minioadmin") \
-        .config("spark.hadoop.fs.s3a.secret.key", "changeme123!") \
-        .config("spark.hadoop.fs.s3a.path.style.access", "true") \
-        .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
-        .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
-        .config("spark.sql.defaultCatalog", "iceberg") \
-        .getOrCreate()
-    
-    spark.sparkContext.setLogLevel("INFO")
-    return spark
+from config import create_spark_session
 
 def aggregate_daily_metrics(spark):
     """Crear agregación diaria de métricas por usuario"""

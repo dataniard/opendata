@@ -4,33 +4,11 @@ Script de ingestión de datos a capa Bronze
 Crea datos de prueba y los ingiere en Iceberg
 """
 
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit, current_timestamp, from_unixtime, unix_timestamp, rand
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType, IntegerType
 import random
 from datetime import datetime, timedelta
 import json
 import sys
-
-def create_spark_session():
-    """Crear sesión de Spark con configuración de Iceberg"""
-    spark = SparkSession.builder \
-        .appName("ingest_bronze_data") \
-        .config("spark.sql.catalog.iceberg", "org.apache.iceberg.spark.SparkCatalog") \
-        .config("spark.sql.catalog.iceberg.type", "hive") \
-        .config("spark.sql.catalog.iceberg.uri", "thrift://hive-metastore:9083") \
-        .config("spark.sql.catalog.iceberg.warehouse", "s3a://iceberg-data") \
-        .config("spark.hadoop.fs.s3a.endpoint", "http://minio:9000") \
-        .config("spark.hadoop.fs.s3a.access.key", "minioadmin") \
-        .config("spark.hadoop.fs.s3a.secret.key", "changeme123!") \
-        .config("spark.hadoop.fs.s3a.path.style.access", "true") \
-        .config("spark.hadoop.fs.s3a.connection.ssl.enabled", "false") \
-        .config("spark.sql.extensions", "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions") \
-        .config("spark.sql.defaultCatalog", "iceberg") \
-        .getOrCreate()
-    
-    spark.sparkContext.setLogLevel("INFO")
-    return spark
+from config import create_spark_session
 
 def generate_sample_events(num_records=1000):
     """Generar datos de prueba de eventos"""
