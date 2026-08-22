@@ -595,5 +595,63 @@ docker compose -f docker/docker-compose.yml exec airflow-webserver \
 
 ---
 
-**Versión**: 1.0  
-**Última actualización**: Julio 2026
+## 📌 Backlog Consolidado de Tareas Pendientes y Mejoras
+
+> **Este apartado es la referencia oficial de las tareas pendientes del proyecto.**
+> Prioridades: 🔴 alta (seguridad/higiene/validación) · 🟡 media · 🟢 baja (mejoras futuras).
+> Última revisión del backlog: Agosto 2026.
+
+### 1. Seguridad y Higiene del Repositorio 🔴
+- [ ] Crear `.gitignore` y excluir `scripts/__pycache__/` (actualmente commiteado)
+- [ ] Retirar `docker/.env` del control de versiones (contiene credenciales) y crear `docker/.env.example` como plantilla documentada
+- [ ] Eliminar credenciales por defecto hardcodeadas (`changeme123!`, `minioadmin`) en los fallbacks de `scripts/config.py`; fallar explícitamente si falta una variable requerida
+- [ ] Fijar versiones específicas de imágenes Docker en `docker-compose.yml` (evitar `latest` en minio, trino, superset)
+- [ ] Actualizar imágenes base antiguas (`bde2020/hive:2.3.9-postgresql-metastore`, Spark 3.3.0) a versiones mantenidas
+
+### 2. Validación Local del Entorno 🔴
+- [ ] Ejecutar `docker compose up -d` en `docker/` y verificar que los servicios levanten sanos
+- [ ] Verificar acceso a interfaces: MinIO (9001), Spark Master (8080), Trino (8888), Superset (8088), Airflow (8085)
+- [ ] Ejecutar pipeline completo: create → ingest → transform → aggregate
+- [ ] Marcar los checkboxes ya implementados en este documento (~60 sin marcar pese a estar implementados en código)
+
+### 3. CI/CD y Calidad de Código 🟡
+- [ ] Crear workflow de GitHub Actions (`.github/workflows/ci.yml`) con lint + pytest en cada PR
+- [ ] Añadir hooks de pre-commit (ruff/black)
+- [ ] Crear `pyproject.toml` con configuración de linting y formateo
+- [ ] Crear `Makefile` con targets: `up`, `down`, `etl`, `test`, `lint`
+- [ ] Añadir tests de integración contra el stack Docker (smoke tests del pipeline ETL real; los actuales son unitarios sin Spark)
+
+### 4. Orquestación con Airflow 🟡
+- [ ] Dividir el DAG monolítico `opendata_etl_pipeline` (un único BashOperator) en tareas separadas: create_tables >> ingest >> transform >> aggregate
+- [ ] Configurar retries y alertas por fallo de tarea
+- [ ] Validar scheduling diario desde la UI de Airflow
+
+### 5. Calidad de Datos 🟡
+- [ ] Implementar validaciones de calidad en transformaciones Silver/Gold (conteos esperados, nulos, duplicados, esquema)
+- [ ] Evaluar integración de Great Expectations o dbt tests
+- [ ] Registrar resultados en la tabla `data_quality_checks` de PostgreSQL (ya definida en `config/postgres/init.sql`)
+
+### 6. Optimización de Iceberg 🟡
+- [ ] Añadir sort orders e índices a las tablas Iceberg
+- [ ] Implementar políticas de retención (expiración de snapshots, poda de particiones en bronze)
+- [ ] Revisar compresión y particionado según volumen real de datos
+
+### 7. Monitoreo y Observabilidad 🟢
+- [ ] Añadir stack Prometheus + Grafana al docker-compose (Grafana figura en README pero no está desplegado)
+- [ ] Centralizar logs de todos los servicios
+- [ ] Exportar métricas de performance (Spark, Trino, Airflow)
+- [ ] Definir alertas de SLA del pipeline ETL
+
+### 8. Integración de dbt 🟢
+- [ ] Migrar transformaciones Silver/Gold a modelos dbt
+- [ ] Testing y documentación automática de datos (data lineage)
+
+### 9. Respaldo y Escalamiento 🟢
+- [ ] Definir estrategia de backup para MinIO y PostgreSQL
+- [ ] Automatizar inicialización de Superset (usuario admin, conexión a Trino, dashboards de ejemplo)
+- [ ] Migración a Kubernetes con HA para servicios críticos y multi-región
+
+---
+
+**Versión**: 1.1  
+**Última actualización**: Agosto 2026
