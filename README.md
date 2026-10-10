@@ -51,45 +51,9 @@ Este repositorio cubre:
 
 ## 📂 Estructura del Repositorio
 
-```mermaid
-flowchart TD
-	root["opendata/"]
-	docdir["doc/"]
-	doc1["01_SPECS.md"]
-	doc2["02_PLAN.md"]
-	prompts["00_PROMPTS/"]
-	docker["docker/"]
-	compose["docker-compose.yml"]
-	envfile[".env"]
-	config["config/"]
-	spark["config/spark/"]
-	trino["config/trino/"]
-	postgres["config/postgres/"]
-	scripts["scripts/"]
-	initb["init-buckets.sh"]
-	create["create_iceberg_tables.py"]
-	ingest["ingest_bronze_data.py"]
-	quick["QUICKSTART.md"]
-	readme["README.md"]
-
-	root --> docdir
-	docdir --> doc1
-	docdir --> doc2
-	root --> prompts
-	root --> docker
-	docker --> compose
-	docker --> envfile
-	root --> config
-	config --> spark
-	config --> trino
-	config --> postgres
-	root --> scripts
-	scripts --> initb
-	scripts --> create
-	scripts --> ingest
-	root --> quick
-	root --> readme
-```
+![Estructura del repositorio OpenData](opendata-structure.png)
+<br>
+*Diagrama generado a partir de mermaid y convertido a PNG mediante draw.io/mermaid-cli. Muestra la estructura completa del repositorio con sus directorios y scripts principales.*
 
 ---
 
