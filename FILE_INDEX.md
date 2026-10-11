@@ -8,56 +8,9 @@ Se han creado **16 archivos nuevos** organizados en una estructura profesional y
 
 ## 📂 Estructura del Proyecto
 
-```mermaid
-flowchart TD
-   root["opendata/"]
-   readme["README.md"]
-   quick["QUICKSTART.md"]
-   arch["ARCHITECTURE_DIAGRAM.md"]
-   impl["IMPLEMENTATION_SUMMARY.md"]
-   index["FILE_INDEX.md"]
-   docdir["doc/"]
-   doc1["01_SPECS.md"]
-   doc2["02_PLAN.md"]
-   docker["docker/"]
-   compose["docker-compose.yml"]
-   envfile[".env"]
-   config["config/"]
-   sparkconf["spark/spark-defaults.conf"]
-   trino["trino/catalog/iceberg.properties"]
-   postgres["postgres/init.sql"]
-   scripts["scripts/"]
-   initb["init-buckets.sh"]
-   createTables["create_iceberg_tables.py"]
-   ingest["ingest_bronze_data.py"]
-   transform["transform_silver_data.py"]
-   aggregate["aggregate_gold_data.py"]
-
-   root --> readme
-   root --> quick
-   root --> arch
-   root --> impl
-   root --> index
-   root --> docdir
-   docdir --> doc1
-   docdir --> doc2
-   root --> docker
-   docker --> compose
-   docker --> envfile
-   root --> config
-   config --> sparkconf
-   config --> trino
-   config --> postgres
-   root --> scripts
-   scripts --> initb
-   scripts --> createTables
-   scripts --> ingest
-   scripts --> transform
-   scripts --> aggregate
-   scripts --> run_etl
-   docker --> airflowdags
-   airflowdags --> dagfile
-```
+![Estructura del proyecto OpenData](img/fileindex-structure.png)
+<br>
+*Estructura del proyecto OpenData Fuente editable en draw.io: [drawio/fileindex-structure.drawio](drawio/fileindex-structure.drawio).*
 
 ---
 

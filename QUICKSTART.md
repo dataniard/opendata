@@ -15,43 +15,9 @@ Guía para desplegar y ejecutar el entorno completo de analítica de datos.
 
 ## 📦 Estructura del Proyecto
 
-```mermaid
-flowchart TD
-  root["opendata/"]
-  docker["docker/"]
-  compose["docker-compose.yml"]
-  envfile[".env"]
-  config["config/"]
-  spark["spark/spark-defaults.conf"]
-  trino["trino/catalog/iceberg.properties"]
-  postgres["postgres/init.sql"]
-  ominit["postgres/init-openmetadata.sql"]
-  scripts["scripts/"]
-  initb["init-buckets.sh"]
-  create["create_iceberg_tables.py"]
-  ingest["ingest_bronze_data.py"]
-  doc["doc/"]
-  doc1["01_SPECS.md"]
-  doc2["02_PLAN.md"]
-  readme["README.md"]
-
-  root --> docker
-  docker --> compose
-  docker --> envfile
-  root --> config
-  config --> spark
-  config --> trino
-  config --> postgres
-  config --> ominit
-  root --> scripts
-  scripts --> initb
-  scripts --> create
-  scripts --> ingest
-  root --> doc
-  doc --> doc1
-  doc --> doc2
-  root --> readme
-```
+![Estructura del proyecto OpenData](img/quickstart-structure.png)
+<br>
+*Estructura del proyecto OpenData Fuente editable en draw.io: [drawio/quickstart-structure.drawio](drawio/quickstart-structure.drawio).*
 
 ---
 

@@ -27,30 +27,9 @@ Este documento define la arquitectura técnica del entorno de analítica de dato
 
 ### Estructura de Buckets
 
-```mermaid
-flowchart TD
-  MinIO["minio/"]
-  Iceberg["iceberg-data/"]
-  Warehouse["warehouse/"]
-  Logs["logs/"]
-
-  Iceberg --> Bronze["bronze/"]
-  Iceberg --> Silver["silver/"]
-  Iceberg --> Gold["gold/"]
-
-  Bronze --> RawEvents["<source-name>/<table-name>/\n- data/\n- metadata/\n- snapshots/"]
-  Silver --> SilverTables["<domain>/<table-name>/\n- data/\n- metadata/\n- snapshots/"]
-  Gold --> GoldTables["<business-unit>/<table-name>/\n- data/\n- metadata/\n- snapshots/"]
-
-  Warehouse --> Namespace["<namespace>/\n- metadata/\n- version-hint.txt"]
-  Logs --> ETL["etl/"]
-  Logs --> Queries["queries/"]
-  Logs --> Errors["errors/"]
-
-  MinIO --> Iceberg
-  MinIO --> Warehouse
-  MinIO --> Logs
-```
+![Estructura de buckets en MinIO (iceberg-data, warehouse, logs)](../img/specs-buckets.png)
+<br>
+*Estructura de buckets en MinIO (iceberg-data, warehouse, logs) Fuente editable en draw.io: [../drawio/specs-buckets.drawio](../drawio/specs-buckets.drawio).*
 
 ### Configuración de Acceso
 

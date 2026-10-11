@@ -174,41 +174,15 @@ README del proyecto actualizado con:
 
 ## 🏗️ Arquitectura Implementada
 
-```mermaid
-flowchart TD
-   subgraph DOCKER["Docker Compose (opendata)"]
-      MinIO["MinIO\n(9000,9001)"]
-      Postgres["PostgreSQL\n(5432)"]
-      HiveMS["Hive Metastore\n(9083)"]
-      Spark["Apache Spark Cluster\nMaster (8080) + Workers (8081,8082)"]
-      Trino["Trino\n(8888)"]
-      Superset["Superset\n(8088)"]
-   end
-
-   MinIO -->|object store| HiveMS
-   Postgres -->|metastore DB| HiveMS
-   HiveMS -->|catalog| Spark
-   Spark -->|query| Trino
-   Trino -->|visualization| Superset
-```
+![Arquitectura Docker del stack OpenData](img/summary-architecture.png)
+<br>
+*Arquitectura Docker del stack OpenData Fuente editable en draw.io: [drawio/summary-architecture.drawio](drawio/summary-architecture.drawio).*
 
 Data Flow:
 
-```mermaid
-flowchart TD
-   Sources["Fuentes de datos\n(API / DB / MQ)"]
-   Bronze["Bronze (Raw)\n- Raw ingesta\n- Retención corta"]
-   Silver["Silver (Curated)\n- Limpieza y enriquecimiento"]
-   Gold["Gold (Serving)\n- Agregados y materializadas"]
-   Queries["Queries (Spark / Trino)"]
-   SupersetNode["Superset (Dashboards)"]
-
-   Sources --> Bronze
-   Bronze --> Silver
-   Silver --> Gold
-   Gold --> Queries
-   Queries --> SupersetNode
-```
+![Flujo de datos medallion hasta Superset](img/summary-dataflow.png)
+<br>
+*Flujo de datos medallion hasta Superset Fuente editable en draw.io: [drawio/summary-dataflow.drawio](drawio/summary-dataflow.drawio).*
 
 ---
 

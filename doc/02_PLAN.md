@@ -26,41 +26,9 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
 - [ ] Revisar requisitos de sistema: Docker, Docker Compose >= 2.0, 8GB RAM mínimo
 - [ ] Clonar/descargar el repositorio `opendata`
 - [ ] Crear estructura de directorios:
-  ```mermaid
-  flowchart TD
-    root["opendata/"]
-    docker["docker/"]
-    compose["docker-compose.yml"]
-    envfile[".env"]
-    config["config/"]
-    minio["minio/"]
-    policy["policy.json"]
-    hive["hive/"]
-    hivesite["hive-site.xml"]
-    iceberg["iceberg/"]
-    sparkconf["spark-defaults.conf"]
-    scripts["scripts/"]
-    initb["init-buckets.sh"]
-    initmeta["init-metastore.sql"]
-    createt["create-tables.py"]
-    docdir["doc/"]
-
-    root --> docker
-    docker --> compose
-    docker --> envfile
-    root --> config
-    config --> minio
-    minio --> policy
-    config --> hive
-    hive --> hivesite
-    config --> iceberg
-    iceberg --> sparkconf
-    root --> scripts
-    scripts --> initb
-    scripts --> initmeta
-    scripts --> createt
-    root --> docdir
-  ```
+  ![Estructura de directorios planificada del proyecto](../img/plan-structure.png)
+<br>
+*Estructura de directorios planificada del proyecto Fuente editable en draw.io: [../drawio/plan-structure.drawio](../drawio/plan-structure.drawio).*
 
 #### 1.2 Despliegue de Docker Compose
 
@@ -110,16 +78,9 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
   ```
 
 - [ ] Verificar estructura de prefijos:
-  ```mermaid
-  flowchart TD
-    A["s3://iceberg-data/"]
-    B["bronze/"]
-    C["silver/"]
-    D["gold/"]
-    A --> B
-    A --> C
-    A --> D
-  ```
+  ![Prefijos bronze, silver y gold en s3://iceberg-data/](../img/plan-buckets.png)
+<br>
+*Prefijos bronze, silver y gold en s3://iceberg-data/ Fuente editable en draw.io: [../drawio/plan-buckets.drawio](../drawio/plan-buckets.drawio).*
 
 #### 2.2 Inicializar Base de Datos de Metadatos
 
