@@ -51,7 +51,7 @@ Este repositorio cubre:
 
 ## 📂 Estructura del Repositorio
 
-![Estructura del repositorio OpenData](opendata-structure.png)
+![Estructura del repositorio OpenData](img/opendata-structure.png)
 <br>
 *Diagrama generado a partir de mermaid y convertido a PNG mediante draw.io/mermaid-cli. Muestra la estructura completa del repositorio con sus directorios y scripts principales.*
 

@@ -6,82 +6,17 @@ Visualización de la arquitectura del proyecto OpenData con Docker Compose, MinI
 
 ## 📐 Diagrama General del Sistema
 
-```mermaid
-flowchart TD
-    subgraph DOCKER["🐳 DOCKER COMPOSE ENVIRONMENT"]
-        subgraph STORAGE["🗄️ STORAGE LAYER"]
-            MinIO["MinIO S3<br/>(9000, 9001)<br/>• iceberg-data/<br/>  ├── bronze/<br/>  ├── silver/<br/>  └── gold/<br/>• warehouse/<br/>• logs/"]
-            PostgreSQL["PostgreSQL DB<br/>(5432)<br/>• Hive Metastore<br/>• Audit Tables<br/>• Schema History<br/>• Quality Checks"]
-        end
-
-        subgraph METADATA["🎯 METADATA & ORCHESTRATION LAYER"]
-            HiveMS["Hive Metastore Service<br/>(9083)<br/>• Namespace Management<br/>• Table Registry<br/>• Partition Management<br/>• Schema Evolution"]
-            Airflow["Apache Airflow<br/>(8085)<br/>• DAGs / Scheduling<br/>• Monitorización<br/>• Retries & Alerts"]
-        end
-
-        subgraph PROCESSING["⚙️ PROCESSING LAYER"]
-            subgraph Spark["Apache Spark Cluster"]
-                Master["Spark Master<br/>(7077, 8080)<br/>• Catalogs<br/>• SQL Engine<br/>• DAG Scheduler"]
-                Workers["Spark Workers x2<br/>(8081, 8082)<br/>• 2 CPU / 2GB each<br/>• Partition Processing<br/>• Shuffle Operations"]
-            end
-            Trino["Trino Query Engine<br/>(8888)<br/>• Interactive SQL<br/>• Iceberg Catalog<br/>• Query Federation<br/>• Cost-based Optimizer"]
-        end
-
-        subgraph VISUALIZATION["📊 VISUALIZATION LAYER"]
-            Superset["Apache Superset<br/>(8088)<br/>• Dashboards<br/>• Charts & Visualizations<br/>• Data Exploration<br/>• BI Reports"]
-        end
-    end
-
-    MinIO --> HiveMS
-    PostgreSQL --> HiveMS
-    HiveMS --> Master
-    Master --> Workers
-    Master --> Trino
-    Trino --> Superset
-```
+![Diagrama general del sistema OpenData](img/architecture-general.png)
+<br>
+*Diagrama general del sistema: entorno Docker Compose con capas de almacenamiento, metadatos, procesamiento y visualización. Fuente editable en draw.io: [drawio/architecture-general.drawio](drawio/architecture-general.drawio).*
 
 ---
 
 ## 🔄 Flujo de Datos - Arquitectura Medallion
 
-```mermaid
-flowchart TD
-    A["📥 DATA SOURCES"]
-    API["External APIs<br/>(REST/gRPC)"]
-    DB["Databases<br/>(SQL)"]
-    MQ["Message Queues<br/>(Kafka/etc)"]
-    
-    API --> INGEST["Spark Ingestor Job<br/>(ingest_bronze.py)"]
-    DB --> INGEST
-    MQ --> INGEST
-    A --> INGEST
-    
-    INGEST --> BRONZE["🥉 BRONZE LAYER - Raw<br/>━━━━━━━━━━<br/>raw_events/<br/>  ├── data/<br/>  ├── metadata/<br/>  └── snapshots/<br/>raw_logs/<br/>  ├── data/<br/>  ├── metadata/<br/>  └── snapshots/<br/>━━━━━━━━━━<br/>Retention: 90-180 days<br/>Compression: Snappy<br/>No transformations<br/>Full audit trail"]
-    
-    BRONZE --> TRANS["Transform<br/>(dbt/Spark)"]
-    BRONZE --> QUERY["Query<br/>(SQL)"]
-    BRONZE --> QUALITY["Monitor Data Quality<br/>Checks"]
-    
-    TRANS --> SILVER["🥈 SILVER LAYER - Curated<br/>━━━━━━━━━━<br/>events/<br/>  ├── data/<br/>  ├── metadata/<br/>  └── snapshots/<br/>users/<br/>  ├── data/<br/>  ├── metadata/<br/>  └── snapshots/<br/>━━━━━━━━━━<br/>Retention: 1-2 years<br/>Compression: Snappy<br/>Cleaned & Validated<br/>Deduplication Applied<br/>Schema Evolution"]
-    QUERY --> SILVER
-    QUALITY --> SILVER
-    
-    SILVER --> AGG["Aggregate<br/>(Spark)"]
-    SILVER --> ANALYTICS["Analytics<br/>Queries"]
-    SILVER --> ML["Machine Learning<br/>Features"]
-    
-    AGG --> GOLD["🥇 GOLD LAYER - Serving<br/>━━━━━━━━━━<br/>daily_user_metrics/<br/>  ├── data/<br/>  ├── metadata/<br/>  └── snapshots/<br/>event_types_daily/<br/>  ├── data/<br/>  ├── metadata/<br/>  └── snapshots/<br/>━━━━━━━━━━<br/>Retention: 2-5 years<br/>Pre-aggregated<br/>Optimized for queries<br/>Ready for BI"]
-    ANALYTICS --> GOLD
-    ML --> GOLD
-    
-    GOLD --> DASH["Dashboards<br/>(Superset)"]
-    GOLD --> REPORTS["Business Reports<br/>(SQL/Spark)"]
-    GOLD --> APIS["APIs<br/>(REST/gRPC)"]
-    
-    DASH --> USERS["👥 END USERS<br/>(Analysts, Decision Makers)"]
-    REPORTS --> USERS
-    APIS --> USERS
-```
+![Flujo de datos medallion OpenData](img/medallion-flow.png)
+<br>
+*Flujo de datos con arquitectura medallion (Bronze → Silver → Gold) hasta los consumidores. Fuente editable en draw.io: [drawio/medallion-flow.drawio](drawio/medallion-flow.drawio).*
 
 ---
 
