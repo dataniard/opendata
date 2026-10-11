@@ -112,6 +112,10 @@ minio/
 │ Spark Driver      │ 4040   │ http://localhost    │ Job UI  │
 │ Trino             │ 8888   │ http://localhost    │ Web UI  │
 │ Superset          │ 8088   │ http://localhost    │ Web UI  │
+│ Airflow           │ 8085   │ http://localhost    │ Web UI  │
+│ Elasticsearch     │ 9200   │ http://localhost    │ Search  │
+│ OpenMetadata      │ 8585   │ http://localhost    │ Web UI  │
+│ OM Ingestion      │ 8090   │ http://localhost    │ Web UI  │
 └─────────────────────────────────────────────────────────────┘
 
 Network Connectivity:
@@ -144,8 +148,17 @@ Network Connectivity:
 │ Trino            │ trinodb/trino:latest     │ SQL query engine        │
 │ Superset         │ apache/superset:latest   │ BI & visualization      │
 │ MinIO Init       │ minio/mc:latest          │ Bucket provisioning     │
+│ Elasticsearch    │ elasticsearch:9.3.0      │ OM search engine        │
+│ OM Server        │ om-server:1.12.14        │ Catalog + governance    │
+│ OM Ingestion     │ om-ingestion:1.12.14     │ Metadata ingestion      │
+│ OM Migrate       │ om-server:1.12.14        │ One-shot DB migration   │
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+Nota: imágenes reales pineadas en `docker-compose.yml` —
+`docker.getcollate.io/openmetadata/server:1.12.14`,
+`docker.getcollate.io/openmetadata/ingestion:1.12.14` y
+`docker.elastic.co/elasticsearch/elasticsearch:9.3.0`.
 
 ---
 

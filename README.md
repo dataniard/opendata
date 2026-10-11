@@ -37,6 +37,9 @@ Este repositorio cubre:
 - Metabase
 - Grafana
 
+### Gobierno del Dato
+- OpenMetadata + Elasticsearch
+
 ### Análisis y Datos
 - Jupyter Notebook
 - RStudio
@@ -92,6 +95,9 @@ bash scripts/run_etl_pipeline.sh
 
 # 5. Acceder a Spark Master
 # http://localhost:8080
+
+# 6. Acceder a OpenMetadata UI (gobierno del dato, solo compose completo)
+# http://localhost:8585 (admin@open-metadata.org / admin)
 ```
 
 ---
@@ -108,10 +114,11 @@ bash scripts/run_etl_pipeline.sh
 - **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Resumen de todo lo implementado
 
 ### ⚙️ Archivos de Configuración
-- **[docker-compose.yml](docker/docker-compose.yml)** - Orquestación de 10 servicios
+- **[docker-compose.yml](docker/docker-compose.yml)** - Orquestación de 16 servicios (15 + 1 job de migración)
 - **[spark-defaults.conf](config/spark/spark-defaults.conf)** - Spark + Iceberg
 - **[iceberg.properties](config/trino/catalog/iceberg.properties)** - Trino
 - **[init.sql](config/postgres/init.sql)** - PostgreSQL + auditoría
+- **[init-openmetadata.sql](config/postgres/init-openmetadata.sql)** - Rol y BBDD para OpenMetadata
 
 ### 🔧 Scripts de Utilidad
 - **[init-buckets.sh](scripts/init-buckets.sh)** - Crear buckets MinIO

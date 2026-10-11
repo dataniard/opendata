@@ -71,6 +71,8 @@ Plan de implementación paso a paso para desplegar un entorno completo de analí
   - Spark (standalone o cluster)
   - Trino (opcional, 8080)
   - Superset (opcional, 8088)
+  - Elasticsearch (opcional, 9200)
+  - OpenMetadata Server (opcional, 8585) + Ingestion (opcional, 8090)
 
 - [ ] Crear archivo `.env` con variables:
   ```env
@@ -527,6 +529,30 @@ docker compose -f docker/docker-compose.yml exec airflow-webserver \
 
 ---
 
+### Fase 8: Gobierno del Dato con OpenMetadata (opcional, Semana 5+)
+
+> Requiere el `docker-compose.yml` completo y ~6 GiB RAM (Elasticsearch + servidor).
+> Servicios: `elasticsearch` (9200), `openmetadata-migrate` (job one-shot),
+> `openmetadata-server` (8585/8586), `openmetadata-ingestion` (8090).
+
+#### 8.1 Desplegar OpenMetadata
+
+- [ ] Verificar que el rol `openmetadata` y las BBDD `openmetadata_db` /
+  `openmetadata_ingestion_db` se crean vía `config/postgres/init-openmetadata.sql`
+- [ ] Levantar el stack completo y esperar a `openmetadata-migrate`
+  (`service_completed_successfully`) y al healthcheck del servidor (`:8586/healthcheck`)
+- [ ] Acceder a la UI en http://localhost:8585 (`admin@open-metadata.org` / `admin`)
+
+#### 8.2 Conectar el Catálogo
+
+- [ ] Conector Hive Metastore (`thrift://hive-metastore:9083`): namespaces bronze/silver/gold
+- [ ] Conector Trino (catálogo `iceberg`): exploración y profiling
+- [ ] Conector Airflow: linaje de los DAGs ETL
+- [ ] Conector Superset: dashboards y charts sobre la capa Gold
+- [ ] Definir glosario de negocio y owners por dominio
+
+---
+
 ## ✅ Lista de Verificación
 
 ### Infraestructura
@@ -536,6 +562,7 @@ docker compose -f docker/docker-compose.yml exec airflow-webserver \
 - [ ] PostgreSQL está activo en localhost:5432
 - [ ] Hive Metastore responde en localhost:9083
 - [ ] Spark/Trino están en ejecución
+- [ ] OpenMetadata accesible en http://localhost:8585 (opcional, requiere ~6 GiB RAM)
 
 ### Almacenamiento
 
@@ -650,6 +677,12 @@ docker compose -f docker/docker-compose.yml exec airflow-webserver \
 - [ ] Definir estrategia de backup para MinIO y PostgreSQL
 - [ ] Automatizar inicialización de Superset (usuario admin, conexión a Trino, dashboards de ejemplo)
 - [ ] Migración a Kubernetes con HA para servicios críticos y multi-región
+
+### 10. Gobierno del Dato con OpenMetadata 🟢
+- [ ] Validar despliegue completo (ES + migrate + server + ingestion) en máquina con ≥8 GB RAM
+- [ ] Configurar conectores Hive, Trino, Airflow (linaje) y Superset
+- [ ] Definir glosario, owners y políticas de acceso por dominio
+- [ ] Programar ingestas de metadatos y tests de calidad periódicos
 
 ---
 

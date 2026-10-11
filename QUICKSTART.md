@@ -25,6 +25,7 @@ flowchart TD
   spark["spark/spark-defaults.conf"]
   trino["trino/catalog/iceberg.properties"]
   postgres["postgres/init.sql"]
+  ominit["postgres/init-openmetadata.sql"]
   scripts["scripts/"]
   initb["init-buckets.sh"]
   create["create_iceberg_tables.py"]
@@ -41,6 +42,7 @@ flowchart TD
   config --> spark
   config --> trino
   config --> postgres
+  config --> ominit
   root --> scripts
   scripts --> initb
   scripts --> create
@@ -75,6 +77,8 @@ Esto inicia:
 - Trino (puerto 8888)
 - Superset (puerto 8088)
 - Apache Airflow Webserver (puerto 8085)
+- Elasticsearch (puertos 9200, 9300, solo compose completo)
+- OpenMetadata Server (puertos 8585, 8586) + Ingestion (puerto 8090, solo compose completo)
 
 ### 1.3 Verificar que los servicios estén activos
 
@@ -283,6 +287,45 @@ Abre en tu navegador: [http://localhost:8088](http://localhost:8088)
 
 ---
 
+## 🏛️ Paso 8: Gobierno del Dato con OpenMetadata (Opcional)
+
+> Requiere el `docker-compose.yml` completo y ~6 GiB RAM libres (Elasticsearch + servidor).
+> No disponible en el perfil lite. En el primer arranque, `openmetadata-migrate`
+> crea el esquema sobre `openmetadata_db` automáticamente.
+
+### 8.1 Acceder a OpenMetadata
+
+Abre en tu navegador: [http://localhost:8585](http://localhost:8585)
+
+- Usuario: `admin@open-metadata.org`
+- Contraseña: `admin` (cambiar en producción)
+
+### 8.2 Conectar las fuentes del stack
+
+Desde **Settings → Services**, añade estas conexiones:
+
+1. **Hive Metastore** (`thrift://hive-metastore:9083`): ingiere los namespaces
+   `bronze`, `silver` y `gold` con esquemas y propiedades Iceberg.
+2. **Trino** (host `trino`, puerto `8080`, catálogo `iceberg`): exploración y profiling.
+3. **Airflow** (`http://airflow-webserver:8080`): linaje de los DAGs ETL.
+4. **Superset** (`http://superset:8088`): dashboards y charts sobre la capa Gold.
+
+### 8.3 Nota para volúmenes ya inicializados
+
+Si tu volumen `postgres_data` ya existía antes de añadir OpenMetadata, los scripts
+de `config/postgres/` no se reejecutan. Crea el rol y las BBDD a mano:
+
+```bash
+docker compose -f docker-compose.yml exec postgres psql -U opendata -d hive_metastore -c \
+  "CREATE ROLE openmetadata WITH LOGIN PASSWORD 'changeme-om123!'"
+docker compose -f docker-compose.yml exec postgres psql -U opendata -d hive_metastore -c \
+  "CREATE DATABASE openmetadata_db OWNER openmetadata"
+docker compose -f docker-compose.yml exec postgres psql -U opendata -d hive_metastore -c \
+  "CREATE DATABASE openmetadata_ingestion_db OWNER openmetadata"
+```
+
+---
+
 ## 🛑 Detener la Infraestructura
 
 ```bash
@@ -302,6 +345,8 @@ docker compose down -v  # Eliminar volúmenes también
 | Trino | http://localhost:8888 | - | - |
 | Superset | http://localhost:8088 | admin | admin123 |
 | Airflow Webserver | http://localhost:8085 | admin | admin |
+| OpenMetadata | http://localhost:8585 | admin@open-metadata.org | admin |
+| Elasticsearch | http://localhost:9200 | - | - |
 
 ---
 

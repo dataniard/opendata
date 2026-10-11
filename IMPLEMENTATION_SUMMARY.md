@@ -264,3 +264,18 @@ flowchart TD
 **Implementación completada**: Julio 2026  
 **Versión**: 1.0  
 **Estado**: ✅ Ready for Development
+
+---
+
+## 🆕 Actualización: Gobierno del Dato (Octubre 2026)
+
+- **OpenMetadata 1.12.14** añadido al stack como herramienta de gobierno del dato
+  (catálogo, linaje, calidad, glosario), junto a **Elasticsearch 9.3.0** como motor de búsqueda.
+- Nuevos servicios en `docker/docker-compose.yml` (solo perfil completo):
+  `elasticsearch` (9200/9300), `openmetadata-migrate` (job one-shot),
+  `openmetadata-server` (8585/8586), `openmetadata-ingestion` (8090).
+- Nuevo `config/postgres/init-openmetadata.sql`: rol `openmetadata` y BBDD
+  `openmetadata_db` / `openmetadata_ingestion_db` (reutiliza el PostgreSQL del stack).
+- Documentado en `doc/01_SPECS.md` (sección Gobierno del Dato), `QUICKSTART.md`
+  (Paso 8), `doc/02_PLAN.md` (Fase 8 + backlog) y capa `GOVERNANCE` en los diagramas.
+- ⚠️ Requiere ~6 GiB RAM: no desplegable en el perfil lite ni en máquinas pequeñas.

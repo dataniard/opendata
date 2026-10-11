@@ -19,6 +19,7 @@ Este documento define la arquitectura técnica del entorno de analítica de dato
 | **Motor de Procesamiento** | Apache Spark / Trino | Ingesta, transformación y consultas |
 | **Orquestación ETL** | Apache Airflow / dbt | Pipelines y automatización |
 | **Visualización** | Apache Superset / Metabase | BI y dashboarding |
+| **Gobierno del Dato** | OpenMetadata + Elasticsearch | Catálogo, linaje, calidad y glosario |
 
 ---
 
@@ -138,6 +139,36 @@ CREATE TABLE schema_evolution (
   created_at TIMESTAMP DEFAULT NOW()
 );
 ```
+
+---
+
+## 🏛️ Gobierno del Dato (OpenMetadata)
+
+### Propósito
+
+Centralizar el **catálogo de datos** (tablas Iceberg, esquemas, propietarios), el **linaje** (Bronze → Silver → Gold, DAGs de Airflow), los **tests de calidad** y el **glosario de negocio** en una única UI.
+
+### Componentes Desplegados (solo `docker-compose.yml` completo)
+
+| Servicio | Imagen | Puertos | Propósito |
+|---|---|---|---|
+| `elasticsearch` | `docker.elastic.co/elasticsearch/elasticsearch:9.3.0` | `9200`, `9300` | Índice de búsqueda del catálogo |
+| `openmetadata-migrate` | `docker.getcollate.io/openmetadata/server:1.12.14` | — | Job one-shot de migración de esquema |
+| `openmetadata-server` | `docker.getcollate.io/openmetadata/server:1.12.14` | `8585` (UI/API), `8586` (admin) | Catálogo, glosario, linaje, calidad |
+| `openmetadata-ingestion` | `docker.getcollate.io/openmetadata/ingestion:1.12.14` | `8090` → `8080` | Airflow standalone para ingestas de metadatos |
+
+- **Backend relacional**: reutiliza el PostgreSQL del stack (`openmetadata_db`, rol `openmetadata`, creados por `config/postgres/init-openmetadata.sql`).
+- **Backend del ingestion**: BBDD `openmetadata_ingestion_db` en el mismo PostgreSQL.
+- **Acceso por defecto**: UI en `http://localhost:8585` con `admin@open-metadata.org` / `admin` (cambiar en producción).
+- **Requisitos**: el conjunto Elasticsearch + OpenMetadata exige ~6 GiB RAM y 4 vCPU; **no** está incluido en el perfil `docker-compose.lite.yml`.
+
+### Conectores Recomendados
+
+1. **Hive Metastore** (`thrift://hive-metastore:9083`): ingiere namespaces bronze/silver/gold, esquemas y propiedades de las tablas Iceberg.
+2. **Trino** (`trino:8080`, catálogo `iceberg`): expone las tablas para exploración y profiling desde OpenMetadata.
+3. **Airflow** (`http://airflow-webserver:8080`): linaje de los DAGs ETL hacia las tablas que leen/escriben.
+4. **Superset** (`http://superset:8088`): ingiere dashboards y charts para trazar consumo Gold → BI.
+5. **dbt** (futuro): tests y documentación como fuente de calidad y descripciones.
 
 ---
 
@@ -313,6 +344,12 @@ spark.sql.iceberg.write.shuffle-by-partition-id=true
 - Control de dependencias
 - Ejemplo de DAG en `docker/airflow/dags/opendata_example_dag.py`
 - Wrapper de pipeline en `scripts/run_etl_pipeline.sh`
+
+### 6. OpenMetadata + Elasticsearch (opcional)
+- Catálogo centralizado de tablas Iceberg, glosario y linaje
+- Ingestión de metadatos desde Hive, Trino, Airflow y Superset
+- Tests de calidad y profiling sobre las capas medallion
+- Solo en `docker-compose.yml` completo (requiere ~6 GiB RAM)
 
 ---
 
